@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<title>FreightWise Programming Test</title>
+	<link rel="stylesheet"
+	      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+	<script>
+		'use strict';
+
+		/**
+		 * Software Developer test.
+		 *
+		 * Doing research and making API calls are an important part of what we do at FreightWise.  This test will
+		 * demonstrate your abilities to:
+		 *
+		 * - Make an API call
+		 * - Research an API
+		 * - Do basic DOM manipulation
+		 * - Parse data
+		 * - Handle errors
+		 * - Be creative
+		 *
+		 * Feel free to ask any questions you may have.  Use a lot of comments, and explain why you are doing things.
+		 * Don't spend more than 1-2 hours on it - we aren't expecting a finished product, but it should work and look
+		 * nice.  Feel free to use any third party libraries, and if you do so, explain why you used them instead of built-in browser APIs.
+		 *
+		 * Instructions:
+		 * - Use the axios (https://github.com/axios/axios) request library to make an API call to the OpenWeatherMap
+		 *   API for Current Weather Data using this API key: ****
+		 *   We've already imported this library to get you started.
+		 * - Use either async/await or Promises.
+		 * - Get the weather for Brentwood, TN, and write it to the DOM using the `setResults` method below.  Be
+		 *   creative and make it look nice.
+		 * - Handle errors and use the `setError` method below to display the error.  Also make it look nice.
+		 * - If you find any mistakes in the test, fix them, and leave a comment about what you fixed and why.
+		 * - Make sure your code is readable and maintainable.
+		 * - Use plenty of descriptive comments.
+		 * - Make sure your code runs in the latest version of Google Chrome and Firefox (ES6 is allowed).
+		 * - Make your code live (GitHub with GitHub pages works nice).
+		 * - Send a link to your finished test to dev-team-jobs@freightwisellc.com.
+		 *
+		 * Feel free to add your own twist to it (completely optional).  Here are a few ideas:
+		 * - Sign up for NewsAPI.org and get the Top Headlines and show them along with the weather.
+		 * - Use the browser location API to get the user's current location, and show that location's weather.
+		 * - Show a satellite map of the weather in Brentwood.
+		 * - Request a user's phone number and send them an SMS with the weather.
+		 */
+		class Test {
+			constructor() {
+				this.testResults = document.getElementsByClassName('test-results');
+			}
+
+			async run() {
+				console.log('Running the test');
+				try {
+					const apiKey = '8fd67a091981a015cfbb030cfecdccd0';
+					const city = document.querySelector('input[name="cityState"]').value + ', USA';
+
+					//	const lat = latitude;
+					//	const lon = longitude;
+
+					// call current weather report API
+					const response = await axios.get(
+						'https://api.openweathermap.org/data/2.5/weather',
+						{
+							params: {
+								q: city,
+								// lat: lat,
+								// lon: lon,
+								appid: apiKey,
+								units: 'imperial'
+							}
+						}
+					);
+					const data = response.data;
+
+					// Call 5 day forecast API
+					// Ran out of time to properly format this response, will be in v0.2 release.
+					// const forecastResponse = await axios.get(
+					// 				'https://api.openweathermap.org/data/2.5/forecast',
+					// 				{
+					// 					params: {
+					// 						lat: lat,
+					// 						lon: lon,
+					// 						appid: apiKey,
+					// 						units: 'imperial'
+					// 					}
+					// 				}
+					// 			);
+					// 			const forecastResponseData = response.data;
+
+					this.setResults({
+						city: data.name,
+						country: data.sys.country,
+						temp: data.main.temp + '°F',
+						description: data.weather[0].description,
+						humidity: data.main.humidity + '%',
+						//rain: data.rain[0] + 'mm in past hour',
+						windSpeed: data.wind.speed + ' m/s'
+
+					});
+				} catch (error) {
+					console.error('[Test]', 'Error fetching weather data:', error.message);
+					if (error.response) {
+						this.setError('Error:' + error.response.status + '<br>' + error.response.data.message);
+					} else {
+						this.setError('Error:' + error.message);
+					}
+				}
+			}
+
+			setError(message) {
+				const errorResults = document.getElementsByClassName("error-results")[0]
+				document.getElementById('error').innerHTML = message;
+				if (document.getElementById('error').innerText != '') {
+					errorResults.style.display = 'block';
+				} else {
+					errorResults.style.display = 'none';
+				}
+			}
+
+			setResults(results) {
+				document.getElementById('city').innerHTML = results.city;
+				document.getElementById('temp').innerHTML = results.temp;
+				document.getElementById('current').innerHTML = results.description;
+				document.getElementById('humid').innerHTML = results.humidity;
+				//	document.getElementById('rain').innerHTML = results.rain;
+				document.getElementById('wind').innerHTML = results.windSpeed;
+			}
+		}
+
+	</script>
+
+	<style>
+		.container {
+			width: 400px;
+			margin: 0 auto;
+			padding: 20px;
+			text-align: left;
+			border: 1px solid black;
+		}
+
+		.test-results {
+			max-width: 250px;
+			margin: 0 auto;
+			padding: 20px;
+			text-transform: capitalize;
+		}
+
+		.title {
+			display: contents;
+		}
+
+		.l2 {
+			display: contents;
+		}
+
+		.city-state-container {
+			max-width: 250px;
+			margin: 0 auto;
+			padding: 20px;
+			text-align: center;
+		}
+
+		.error-results {
+			max-width: 250px;
+			margin: 0 auto;
+			padding: 20px;
+			text-align: center;
+			background-color: lightcoral;
+		}
+
+		.button-container {
+			text-align: center;
+		}
+
+		.button-container > button {
+			margin: 0;
+			padding: 10px 18px;
+			color: white;
+			background-color: #008000;
+			border: none;
+			border-radius: 3px;
+			transition: all 200ms ease-in-out;
+			font-size: 14px;
+		}
+
+		.button-container > button:hover {
+			background-color: #00A000;
+		}
+		.button-container > button:active {
+			background-color: #006000;
+		}
+	</style>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="error-results" style="display:none;">
+		<div class="error-message" id="error"></div>
+	</div>
+	<div class="test-results" id="result">
+		<div class="l1"> <span class="material-symbols-outlined">
+house
+		</span>
+			<div class="title">City:</div>
+			<div class="l2" id="city"></div>
+		</div>
+		<div class="l1"><span class="material-symbols-outlined">
+device_thermostat
+</span> Temp:
+			<div class="l2" id="temp"></div>
+		</div>
+		<div class="l1"><span class="material-symbols-outlined">
+cloud_alert
+</span> Currently:
+			<div class="l2" id="current"></div>
+		</div>
+		<div class="l1"><span class="material-symbols-outlined">
+humidity_percentage
+</span> Humidity:
+			<div class="l2" id="humid"></div>
+		</div>
+		<div class="l1"><span class="material-symbols-outlined">
+air
+</span> Wind:
+			<div class="l2" id="wind"></div>
+		</div>
+	</div>
+	<div class="city-state-container">
+		<form>
+			<label for="cityState">City, ST:</label>
+			<br>
+			<input type="text" id="cityState" name="cityState" placeholder="City, ST"/>
+		</form>
+	</div>
+	<div class="button-container"></div>
+</div>
+<script>
+	'use strict';
+
+	/**
+	 * Creates a button for kicking off the test and adds it to the DOM.
+	 *
+	 * @param {HTMLElement} context  the parent element to add the button to
+	 * @param {Test}        test     the test to be executed
+	 * @returns {HTMLElement} the button added to the test
+	 */
+	function addButtonForTest(context, test) {
+		let testButton = document.createElement('button');
+
+		// add keydown even listener to trigger search on Enter
+		const cityState = document.getElementById('cityState');
+		cityState.addEventListener('keydown', function (event) {
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				test.run();
+			}
+		});
+		testButton.type = 'button';
+		testButton.innerText = 'Get Your Weather';
+		testButton.onclick = () => test.run();
+
+		context.appendChild(testButton);
+
+		return testButton;
+	}
+
+	// Create the Test and add a button to the UI for running the test
+	const test = new Test();
+	const buttonContainer = document.getElementsByClassName('button-container')[0];
+
+	addButtonForTest(buttonContainer, test);
+	/**
+	 * Startng with opening up the openmaps API docs, atempted to use the OneCall 3.0 api. Response from the server made it clear the supplid api key was not valid for the OneCall api.
+	 *
+	 * Switching to the 2.5 API, I got a helpful "Invalid API key. Please see https://openweathermap.org/faq#error401 for more info." message.
+	 *
+	 *     I pulled up my records and found I had an OpenWeatherMap account from Pebble development years ago. I spun up a
+	 *         new API key and waited a few hours for it to activate, and started planning the layout of the page.
+	 *
+	 * Back in 2024 western North Carolina got hit by Hurricane Helene. Being very far inland and, well, mountains, the
+	 *         area was not prepared for the catastrophic flooding that happened. In the aftermath of entire communities being
+	 *         washed away the infrastructure for modern life was knocked out of commission for, in some places, months. That
+	 *         included cell phone towers. The remaining towers were quickly overwhelmed. Local news sites began publishing
+	 *         bare-bones websites, stripped down to the bare essential HTML, CSS and JS.
+	 * Last winter's ice storm here in Nashville caused a similar problem in some parts of the city, at a much smaller
+	 *         scale. Would having an easy way to check the weather during a major weather event have been beneficial to
+	 *         folks?
+	 *
+	 * **The goal, then, is to make an informational weather web app as light and fast as possible.**
+	 *
+	 * Once the new openweather api key started working I quickly pulled in the default data and pulled out the basic info needed for a weather report. Adding in a simple city, state field allows people to search their location.
+	 *
+	 * The plaintext response looked very ugly, so I decided to pull in an icon font. I used to use fontAwesome for this, but pulling it up for this project I found it was a very big package that required several more steps than I was planning.
+	 *
+	 * I went with material symbols and, as I was running out of time, pulled in the whole font library. There's a good deal of updates I want to do to this web app but am timeboxed to get the POC working.
+	 *
+	 *
+	 * Future iteration roadmap:
+	 * -> add in five day forecast API data
+	 * -> Accessibility check
+	 * -> Trim font library to only needed icons
+	 * -> Add appropriate icons for current weather responses
+	 * -> set up browser location API call
+	 * -> openweathermap returns Murray, UT for Murray, KY. I will need to run the city request through the geolocation api to get the correct locations.
+	 * ----> Or switch to other weather api options?
+	 */
+
+</script>
+</body>
+</html>
