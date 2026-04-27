@@ -76,22 +76,6 @@
 						}
 					);
 					const data = response.data;
-
-					// Call 5 day forecast API
-					// Ran out of time to properly format this response, will be in v0.2 release.
-					// const forecastResponse = await axios.get(
-					// 				'https://api.openweathermap.org/data/2.5/forecast',
-					// 				{
-					// 					params: {
-					// 						lat: lat,
-					// 						lon: lon,
-					// 						appid: apiKey,
-					// 						units: 'imperial'
-					// 					}
-					// 				}
-					// 			);
-					// 			const forecastResponseData = response.data;
-
 					this.setResults({
 						city: data.name,
 						country: data.sys.country,
@@ -111,6 +95,81 @@
 					}
 				}
 			}
+
+			// Call 5-day forecast API
+			// Ran out of time to properly format this response, will be in v0.2 release.
+			async forecast() {
+				console.log('Running the test');
+				try {
+					const apiKey = '8fd67a091981a015cfbb030cfecdccd0';
+					const city = document.querySelector('input[name="cityState"]').value + ', USA';
+
+					// const lat = latitude;
+					// const lon = longitude;
+
+					// call forecast API
+					const forecastResponse = await axios.get(
+						'https://api.openweathermap.org/data/2.5/forecast',
+						{
+							params: {
+								q: city,
+								// lat: lat,
+								// lon: lon,
+								appid: apiKey,
+								units: 'imperial'
+							}
+						}
+					);
+					const forecastResponseData = forecastResponse.data;
+					console.log('forecastResponseData');
+					console.log(forecastResponseData);
+					console.log(forecastResponseData.city.name);
+
+					// Populate Forecast Table
+					// Helper function to format date nicely
+					const formatDate = (dateString) => {
+						const options = {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+						return new Date(dateString).toLocaleDateString('en-US', options);
+					};
+					const tbody = document.getElementById('forecast-body');
+					const weatherData = forecastResponseData.list;
+					console.log('weatherData');
+					console.log(weatherData);
+					weatherData.list.forEach(item => {
+						const row = document.createElement('tr');
+
+						// Extract data
+						const timeStr = formatDate(item.dt_txt);
+						const temp = item.main.temp;
+						console.log(temp);
+						const feelsLikeC = item.main.feels_like;
+						const weatherDesc = item.weather.description; // e.g., "Rain"
+						const weatherIcon = getIcon(item.weather[0].id); // e.g., "☁️"
+						const humidity = item.main.humidity;
+
+						row.innerHTML = `
+            <td class="col-time">${timeStr}</td>
+            <td class="col-temp">${temp}°</td>
+            <td class="col-feels">${feelsLikeC}°</td>
+            <td class="col-weather">
+                <span class="weather-icon">${weatherIcon}</span>
+                <small>${weatherDesc}</small>
+            </td>
+        `;
+
+						tbody.appendChild(row);
+					});
+
+				} catch (error) {
+					console.error('[Test]', 'Error fetching weather data:', error.message);
+					if (error.response) {
+						this.setError('Error:' + error.response.status + '<br>' + error.response.data.message);
+					} else {
+						this.setError('Error:' + error.message);
+					}
+				}
+			}
+
 
 			setError(message) {
 				const errorResults = document.getElementsByClassName("error-results")[0]
@@ -191,6 +250,7 @@
 		.button-container > button:hover {
 			background-color: #00A000;
 		}
+
 		.button-container > button:active {
 			background-color: #006000;
 		}
@@ -238,6 +298,24 @@ air
 		</form>
 	</div>
 	<div class="button-container"></div>
+
+	<!-- Hourly Forecast Table -->
+	<div class="forecast-section">
+		<h2>Hourly Forecast</h2>
+		<table id="forecast-table">
+			<thead>
+			<tr>
+				<th class="col-time">Time</th>
+				<th class="col-temp">Temp (°C)</th>
+				<th class="col-feels">Feels Like</th>
+				<th class="col-weather">Weather Condition</th>
+			</tr>
+			</thead>
+			<tbody id="forecast-body">
+			<!-- Rows will be inserted here by JavaScript -->
+			</tbody>
+		</table>
+	</div>
 </div>
 <script>
 	'use strict';
@@ -249,7 +327,7 @@ air
 	 * @param {Test}        test     the test to be executed
 	 * @returns {HTMLElement} the button added to the test
 	 */
-	function addButtonForTest(context, test) {
+	function addButtonForTest(context, Test) {
 		let testButton = document.createElement('button');
 
 		// add keydown even listener to trigger search on Enter
@@ -257,12 +335,13 @@ air
 		cityState.addEventListener('keydown', function (event) {
 			if (event.key === 'Enter') {
 				event.preventDefault();
-				test.run();
+				Test.run();
+				Test.forecast();
 			}
 		});
 		testButton.type = 'button';
 		testButton.innerText = 'Get Your Weather';
-		testButton.onclick = () => test.run();
+		testButton.onclick = () => Test.run();
 
 		context.appendChild(testButton);
 
@@ -305,6 +384,9 @@ air
 	 * -> openweathermap returns Murray, UT for Murray, KY. I will need to run the city request through the geolocation api to get the correct locations.
 	 * ----> Or switch to other weather api options?
 	 */
+
+</script>
+<script>
 
 </script>
 </body>
