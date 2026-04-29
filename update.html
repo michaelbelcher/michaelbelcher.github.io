@@ -3,56 +3,18 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="this is a low-bandwidth weather webapp">
 
 	<title>low-bandwidth weather</title>
 	<script>
 		'use strict';
-
-		/**
-		 * Software Developer test.
-		 *
-		 * Doing research and making API calls are an important part of what we do at FreightWise.  This test will
-		 * demonstrate your abilities to:
-		 *
-		 * - Make an API call
-		 * - Research an API
-		 * - Do basic DOM manipulation
-		 * - Parse data
-		 * - Handle errors
-		 * - Be creative
-		 *
-		 * Feel free to ask any questions you may have.  Use a lot of comments, and explain why you are doing things.
-		 * Don't spend more than 1-2 hours on it - we aren't expecting a finished product, but it should work and look
-		 * nice.  Feel free to use any third party libraries, and if you do so, explain why you used them instead of built-in browser APIs.
-		 *
-		 * Instructions:
-		 * - Use the axios (https://github.com/axios/axios) request library to make an API call to the OpenWeatherMap
-		 *   API for Current Weather Data using this API key: ****
-		 *   We've already imported this library to get you started.
-		 * - Use either async/await or Promises.
-		 * - Get the weather for Brentwood, TN, and write it to the DOM using the `setResults` method below.  Be
-		 *   creative and make it look nice.
-		 * - Handle errors and use the `setError` method below to display the error.  Also make it look nice.
-		 * - If you find any mistakes in the test, fix them, and leave a comment about what you fixed and why.
-		 * - Make sure your code is readable and maintainable.
-		 * - Use plenty of descriptive comments.
-		 * - Make sure your code runs in the latest version of Google Chrome and Firefox (ES6 is allowed).
-		 * - Make your code live (GitHub with GitHub pages works nice).
-		 * - Send a link to your finished test to dev-team-jobs@freightwisellc.com.
-		 *
-		 * Feel free to add your own twist to it (completely optional).  Here are a few ideas:
-		 * - Sign up for NewsAPI.org and get the Top Headlines and show them along with the weather.
-		 * - Use the browser location API to get the user's current location, and show that location's weather.
-		 * - Show a satellite map of the weather in Brentwood.
-		 * - Request a user's phone number and send them an SMS with the weather.
-		 */
 		class Test {
 			constructor() {
 				this.testResults = document.getElementsByClassName('test-results');
 			}
 
+			// current weather API call function
 			async run() {
-				console.log('Running the test');
 				try {
 					const apiKey = '8fd67a091981a015cfbb030cfecdccd0';
 					const city = document.querySelector('input[name="cityState"]').value + ', USA';
@@ -94,8 +56,7 @@
 				}
 			}
 
-			// Call 5-day forecast API
-			// Ran out of time to properly format this response, will be in v0.2 release.
+			// 5-day forecast API function
 			async forecast() {
 				console.log('Running the test');
 				try {
@@ -177,7 +138,7 @@
 				}
 			}
 
-
+			// dump error messages to body so people can debug themselves
 			setError(message) {
 				const errorResults = document.getElementsByClassName("error-results")[0]
 				document.getElementById('error').innerHTML = message;
@@ -208,7 +169,7 @@
 			text-align: left;
 			border: 1px solid black;
 		}
-.header{text-align: center}
+		.header-text{text-align: center}
 		.test-results {
 			max-width: 250px;
 			margin: 0 auto;
@@ -288,7 +249,7 @@
 </head>
 <body>
 <div class="container">
-	<div class="header">
+	<div class="header-text">
 		<h1>low-bandwidth weather</h1>
 	</div>
 	<div class="error-results" style="display:none;">
@@ -330,7 +291,6 @@
 	</div>
 	<div class="button-container"></div>
 
-	<!-- Hourly Forecast Table -->
 	<div class="forecast-section">
 		<h2>Hourly Forecast</h2>
 		<table id="forecast-table">
@@ -343,21 +303,13 @@
 			</tr>
 			</thead>
 			<tbody id="forecast-body">
-			<!-- Rows will be inserted here by JavaScript -->
+			<!-- forcast API response goes here -->
 			</tbody>
 		</table>
 	</div>
 </div>
 <script>
 	'use strict';
-
-	/**
-	 * Creates a button for kicking off the test and adds it to the DOM.
-	 *
-	 * @param {HTMLElement} context  the parent element to add the button to
-	 * @param {Test}        test     the test to be executed
-	 * @returns {HTMLElement} the button added to the test
-	 */
 	function addButtonForTest(context, Test) {
 		let testButton = document.createElement('button');
 
@@ -379,7 +331,6 @@
 		return testButton;
 	}
 
-	// Create the Test and add a button to the UI for running the test
 	const test = new Test();
 	const buttonContainer = document.getElementsByClassName('button-container')[0];
 
@@ -409,18 +360,20 @@
 	 *
 	 * Future iteration roadmap:
 	 * ✅ -> add in five day forecast API data
+	 *  ------> v0.3
 	 * -> Accessibility check
 	 * ✅ -> Trim font library to only needed icons
-	 * 	------> replaced with emojis instead, removed font library
+	 * 	------> v0.2, replaced with emojis instead, removed font library
+	 *
 	 * ✅ -> Add appropriate icons for current weather responses
+	 * 	------> v0.4
+	 * 	-> Mobile view fix
+	 * 	------> v0.5?
 	 * -> set up browser location API call
 	 * -> openweathermap returns Murray, UT for Murray, KY. I will need to run the city request through the geolocation api to get the correct locations.
 	 * ----> Or switch to other weather api options?
 	 * -> change from Axios to Fetch()?
 	 */
-
-</script>
-<script>
 
 </script>
 </body>
